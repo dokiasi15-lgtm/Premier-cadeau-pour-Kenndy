@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notre petite aventure ✨</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh; overflow:hidden; font-family:Arial,sans-serif;
+  background:radial-gradient(circle at 50% 40%,#25135a 0%,#0b0925 45%,#02030d 100%);
+  color:white;
+}
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px}
+.hidden{display:none!important}
+.card{
+  width:min(92%,560px); text-align:center; padding:38px 25px;
+  border:1px solid rgba(255,255,255,.18); border-radius:28px;
+  background:rgba(255,255,255,.08); backdrop-filter:blur(12px);
+  box-shadow:0 20px 80px rgba(0,0,0,.45); z-index:10;
+}
+h1{font-size:clamp(2rem,8vw,3.5rem);margin-bottom:18px}
+p{line-height:1.7;color:#ddd;margin-bottom:25px}
+button{
+  border:0;border-radius:999px;padding:14px 28px;margin:7px;
+  font-size:1rem;font-weight:bold;cursor:pointer;transition:.25s;
+}
+.yes{background:#ff5ca8;color:#fff}.no{background:#fff;color:#28103f}
+button:hover{transform:scale(1.07)}
+#starsScreen{background:radial-gradient(circle,#18134c,#050616 65%,#02030d)}
+.star{
+  position:absolute;color:white;cursor:pointer;user-select:none;
+  text-shadow:0 0 8px #fff,0 0 18px #bda9ff;
+  animation:twinkle 2s infinite ease-in-out;
+  z-index:3;
+}
+.star:hover{transform:scale(1.5);color:#ffd9f0}
+@keyframes twinkle{
+  0%,100%{opacity:.45;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.15)}
+}
+.big-title{position:absolute;top:7%;width:100%;text-align:center;z-index:5;pointer-events:none}
+.big-title h2{font-size:clamp(1.4rem,5vw,2.3rem)}
+.big-title p{font-size:.9rem;margin-top:5px}
+.message{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:20;
+  display:flex;align-items:center;justify-content:center;padding:22px;
+}
+.message .box{
+  width:min(90%,480px);padding:32px 24px;text-align:center;
+  border-radius:25px;background:linear-gradient(145deg,#261552,#10102e);
+  border:1px solid rgba(255,255,255,.2);
+  animation:pop .3s ease;
+}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.message h3{font-size:2rem;margin-bottom:15px}
+.message p{margin-bottom:20px}
+#noText{min-height:35px;color:#ff9bc8;font-weight:bold}
+.shooting{
+  position:absolute;width:2px;height:90px;background:linear-gradient(transparent,white);
+  transform:rotate(45deg);opacity:.8;animation:shoot 3s linear infinite;
+}
+@keyframes shoot{from{left:-10%;top:5%;opacity:0}20%{opacity:1}to{left:110%;top:70%;opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- ÉCRAN D'ACCUEIL -->
+<section id="startScreen" class="screen">
+  <div class="card">
+    <div style="font-size:3rem;margin-bottom:10px">✨🌙✨</div>
+    <h1>Kenndy</h1>
+    <p>
+      J'ai préparé une petite aventure pour toi.<br>
+      Mais elle ne peut commencer que si tu le veux...
+    </p>
+    <h2 style="margin-bottom:18px">Veux-tu qu'on commence l'aventure ensemble ?</h2>
+    <button class="yes" onclick="startAdventure()">Oui ✨</button>
+    <button class="no" onclick="sayNo()">Non</button>
+    <div id="noText"></div>
+  </div>
+</section>
+
+<!-- UNIVERS D'ÉTOILES -->
+<section id="starsScreen" class="screen hidden">
+  <div class="big-title">
+    <h2>Bienvenue dans notre ciel, Kenndy ✨</h2>
+    <p>Clique sur les étoiles pour découvrir les messages.</p>
+  </div>
+  <div class="shooting"></div>
+</section>
+
+<!-- MODALE MESSAGE -->
+<div id="messageModal" class="message hidden">
+  <div class="box">
+    <h3 id="messageTitle">✨</h3>
+    <p id="messageText"></p>
+    <button class="yes" onclick="closeMessage()">Continuer ✨</button>
+  </div>
+</div>
+
+<script>
+const messages = [
+  ["Une étoile pour toi ✨","Il y a des personnes qu'on rencontre par hasard... et puis il y a celles qui rendent le hasard intéressant."],
+  ["Petit secret 🌙","Cette étoile cache un message : j'aime bien nos conversations, même quand elles partent dans tous les sens 😄."],
+  ["Encore une ✨","Si tu es arrivée jusqu'ici, c'est que tu es officiellement entrée dans mon petit univers."],
+  ["Étoile mystère 💫","Je ne vais pas tout révéler maintenant... certaines choses sont plus belles quand elles se découvrent petit à petit."],
+  ["Celle-ci est spéciale 🌟","Kenndy, j'espère simplement que cette petite aventure t'aura fait sourire."],
+  ["Dernière étoile 💖","La vraie surprise, c'est peut-être qu'une simple idée puisse devenir un joli souvenir."]
+];
+
+let noClicks = 0;
+
+function startAdventure(){
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("starsScreen").classList.remove("hidden");
+  createStars();
+}
+
+function sayNo(){
+  const texts = [
+    "Tu es sûre ? 😭",
+    "Vraiment ? 👀",
+    "Même pas un petit oui ? 😄",
+    "Réfléchis encore... ✨",
+    "Dernière chance, Kenndy 😌",
+    "Bon... je crois que tu vas devoir cliquer sur Oui 😂"
+  ];
+  document.getElementById("noText").textContent = texts[Math.min(noClicks,texts.length-1)];
+  noClicks++;
+}
+
+function createStars(){
+  const screen = document.getElementById("starsScreen");
+
+  for(let i=0;i<45;i++){
+    const star=document.createElement("div");
+    star.className="star";
+    star.textContent=Math.random()>.75?"✦":"★";
+
+    star.style.left=(3+Math.random()*94)+"%";
+    star.style.top=(8+Math.random()*84)+"%";
+    star.style.fontSize=(10+Math.random()*18)+"px";
+    star.style.animationDelay=(Math.random()*2)+"s";
+
+    star.onclick=()=>openMessage(i % messages.length);
+    screen.appendChild(star);
+  }
+}
+
+function openMessage(index){
+  document.getElementById("messageTitle").textContent=messages[index][0];
+  document.getElementById("messageText").textContent=messages[index][1];
+  document.getElementById("messageModal").classList.remove("hidden");
+}
+
+function closeMessage(){
+  document.getElementById("messageModal").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>
